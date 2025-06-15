@@ -1,0 +1,12 @@
+from selenium.webdriver.common.by import By
+
+class AddUserFormLocators:
+    NAME = (By.ID, "name")
+    AGE = (By.ID, "age")
+    GENDER = (By.ID, "gender")
+    DATE_BIRTH = (By.ID, "date_birthday")
+    ACTIVE = (By.ID, "isActive")
+    ADD_BTN = (By.ID, "add-btn")
+    RESULT_TEXT = (By.CSS_SELECTOR, '.alert.alert-success')
+    EMPTY_NAME_TEXT = (By.ID, 'nameError')
+    EMPTY_AGE_TEXT = (By.ID, 'ageError')
