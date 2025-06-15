@@ -3,6 +3,7 @@ import tempfile
 
 import pytest
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 from api_client.client import FormClient
 from api_client.models.add_user import AddUserModel
@@ -16,12 +17,17 @@ def pytest_addoption(parser):
         "--api-url",
         action="store",
         default="http://158.160.87.146:5000",
-        help="Base API URL"
+        help="API URL"
     )
     parser.addoption(
         "--url",
         action="store",
         default="http://158.160.87.146:5000/login",
+        help="URL"
+    )
+    parser.addoption(
+        "--headless",
+        action="store_true",
         help="Base application URL"
     )
 
@@ -35,23 +41,28 @@ def api_client(request):
 
 @pytest.fixture(scope="session")
 def driver(request):
-    """Фикстура для инициализации драйвера"""
-    options = webdriver.ChromeOptions()
+    is_headless = request.config.getoption("--headless")
+    chrome_options = Options()
+    chrome_options.add_argument("--window-size=1920x1080")
+    if is_headless:
+        chrome_options.add_argument("--headless=new")
 
-    if os.getenv('GITHUB_ACTIONS') == 'true':
-        options.add_argument("--headless=new")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--window-size=1920,1080")
-    else:
-        user_data_dir = os.path.join(tempfile.mkdtemp(), "chrome_profile")
-        options.add_argument(f"--user-data-dir={user_data_dir}")
-        options.add_argument("--start-maximized")
-
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(options=chrome_options)
     yield driver
     driver.quit()
+    # options = webdriver.ChromeOptions()
+    # if os.getenv('GITHUB_ACTIONS') == 'true':
+    #     options.add_argument("--headless=new")
+    #     options.add_argument("--no-sandbox")
+    #     options.add_argument("--disable-dev-shm-usage")
+    #     options.add_argument("--disable-gpu")
+    #     options.add_argument("--window-size=1920,1080")
+    # else:
+    #     user_data_dir = os.path.join(tempfile.mkdtemp(), "chrome_profile")
+    #     options.add_argument(f"--user-data-dir={user_data_dir}")
+    #     options.add_argument("--start-maximized")
+
+
 
 
 @pytest.fixture(scope="session")
