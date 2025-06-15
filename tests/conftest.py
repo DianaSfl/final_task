@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -38,26 +41,29 @@ def api_client(request):
 
 @pytest.fixture(scope="session")
 def driver(request):
-    is_headless = request.config.getoption("--headless")
-    chrome_options = Options()
-    chrome_options.add_argument("--window-size=1920x1080")
-    if is_headless:
-        chrome_options.add_argument("--headless=new")
+    # is_headless = request.config.getoption("--headless")
+    # chrome_options = Options()
+    # chrome_options.add_argument("--window-size=1920x1080")
+    # if is_headless:
+    #     chrome_options.add_argument("--headless=new")
+    #
+    # driver = webdriver.Chrome(options=chrome_options)
+    options = webdriver.ChromeOptions()
+    if os.getenv('GITHUB_ACTIONS') == 'true':
+        options.add_argument("--headless=new")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1920,1080")
+    else:
+        user_data_dir = os.path.join(tempfile.mkdtemp(), "chrome_profile")
+        options.add_argument(f"--user-data-dir={user_data_dir}")
+        options.add_argument("--start-maximized")
 
-    driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome(options=options)
     yield driver
     driver.quit()
-    # options = webdriver.ChromeOptions()
-    # if os.getenv('GITHUB_ACTIONS') == 'true':
-    #     options.add_argument("--headless=new")
-    #     options.add_argument("--no-sandbox")
-    #     options.add_argument("--disable-dev-shm-usage")
-    #     options.add_argument("--disable-gpu")
-    #     options.add_argument("--window-size=1920,1080")
-    # else:
-    #     user_data_dir = os.path.join(tempfile.mkdtemp(), "chrome_profile")
-    #     options.add_argument(f"--user-data-dir={user_data_dir}")
-    #     options.add_argument("--start-maximized")
+
 
 
 
