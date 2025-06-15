@@ -25,7 +25,7 @@ class BasePage:
         element = self._find_element(locator, wait_time)
         return element.text
 
-    def wait_and_click(self, locator, timeout=10):
+    def wait_and_click(self, locator, timeout=30):
         try:
             WebDriverWait(self.driver, timeout).until(
                 EC.element_to_be_clickable(locator)
