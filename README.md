@@ -1,1 +1,0 @@
-testit results import --url https://team-au3z.testit.software/ --token=V1lLaGlXUGFBYTZ2V1NSSEdt --project-id b5d28c1d-ac5f-46a4-886a-328edaba54b5 --configuration-id 08c50d72-36a8-4493-87b7-f4455fc7541b --results reports --testrun-name "Pytest test run"
