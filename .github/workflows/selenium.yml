@@ -12,7 +12,7 @@ jobs:
 
     services:
       selenium:
-        image: selenium/standalone-chrome
+        image: selenium/standalone-chrome:latest
         ports:
           - 4444:4444
         options: --shm-size=2g
@@ -35,7 +35,7 @@ jobs:
         run: |
           pytest tests --headless --junit-xml=reports/results.xml
         env:
-          SELENIUM_OPTS: "--no-sandbox --disable-dev-shm-usage"
+          SELENIUM_OPTS: "--no-sandbox --disable-dev-shm-usage --disable-gpu --window-size=1920,1080"
       - name: Send Test Results to TestIt
         run: |
           testit results import \
