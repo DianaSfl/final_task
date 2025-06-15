@@ -12,10 +12,15 @@ jobs:
 
     services:
       selenium:
-        image: selenium/standalone-chrome:4.11.0  # Фиксируем версию
+        image: selenium/standalone-chrome:4.11.0
         ports:
           - 4444:4444
-        options: --shm-size=2g --health-cmd "curl -f http://localhost:4444/wd/hub/status || exit 1" --health-interval 5s --health-timeout 10s --health-retries 5
+        options: >-
+          --shm-size=2g
+          --health-cmd "curl -f http://localhost:4444/wd/hub/status || exit 1"
+          --health-interval 5s
+          --health-timeout 10s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -25,39 +30,47 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest-xdist  # Для параллельного запуска тестов
+          pip install -r requirements.txt pytest-xdist
 
-      - name: Wait for Selenium to be ready
+      - name: Verify Selenium connection
         run: |
           echo "Waiting for Selenium..."
-          timeout 60 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://selenium:4444/wd/hub/status)" != "200" ]]; do sleep 1; done' || false
+          curl --retry 5 --retry-delay 5 --retry-all-errors \
+            http://selenium:4444/wd/hub/status
           echo "Selenium is ready!"
 
-      - name: Run selenium tests with retries
+      - name: Run tests with retries
+        timeout-minutes: 30
         run: |
           pytest tests \
             --junit-xml=reports/results.xml \
-            --reruns 2 \  # Повторные попытки для flaky-тестов
+            --reruns 2 \
             --reruns-delay 5 \
-            -n auto  # Параллельный запуск
+            -n auto
         env:
           SELENIUM_URL: "http://selenium:4444/wd/hub"
-          SELENIUM_OPTS: "--no-sandbox --disable-dev-shm-usage --disable-gpu --window-size=1920,1080"
+          SELENIUM_OPTS: >-
+            --no-sandbox
+            --disable-dev-shm-usage
+            --disable-gpu
+            --window-size=1920,1080
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: reports/results.xml
+          retention-days: 7
 
-      - name: Send Test Results to TestIt
-        if: success() || failure()  # Отправляем результаты в любом случае
+      - name: Send results to TestIT
+        if: always()
+        timeout-minutes: 5
         run: |
           testit results import \
             --url "https://team-au3z.testit.software/" \
@@ -65,6 +78,6 @@ jobs:
             --project-id "b5d28c1d-ac5f-46a4-886a-328edaba54b5" \
             --configuration-id "08c50d72-36a8-4493-87b7-f4455fc7541b" \
             --results "reports" \
-            --testrun-name "Pytest test run"
+            --testrun-name "Pytest test run $(date +'%Y-%m-%d %H:%M')"
         env:
           TMS_TOKEN: ${{ secrets.TMS_TOKEN }}
