@@ -29,6 +29,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Wait for Selenium
+        run: |
+          for i in {1..10}; do
+            if curl -s http://localhost:4444/wd/hub/status | grep -q "ready"; then
+              echo "Selenium ready!"
+              exit 0
+            fi
+            echo "Waiting for Selenium... ($i/10)"
+            sleep 3
+          done
+          echo "Selenium failed to start!"
+          exit 1
+
       - name: Run selenium tests
         run: |
           pytest tests --headless --junit-xml=reports/results.xml
