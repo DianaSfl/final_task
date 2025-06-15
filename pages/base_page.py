@@ -30,16 +30,32 @@ class BasePage:
         element = self._find_element(locator, wait_time)
         return element.text
 
-    def wait_and_click(self, locator, timeout=10):
+    def wait_and_click(self, locator, timeout=30):  # Увеличено до 30 секунд
         try:
-            WebDriverWait(self.driver, timeout).until(
-                EC.element_to_be_clickable(locator)
-            ).click()
-        except StaleElementReferenceException:
             element = WebDriverWait(self.driver, timeout).until(
-                EC.element_to_be_clickable(locator)
+                EC.element_to_be_clickable(locator),
+                message=f"Элемент {locator} не стал кликабельным за {timeout} сек"
             )
             element.click()
+        except StaleElementReferenceException:
+            element = WebDriverWait(self.driver, timeout).until(
+                EC.element_to_be_clickable(locator),
+                message=f"Элемент {locator} стал stale и не кликабельным за {timeout} сек"
+            )
+            element.click()
+        except Exception as e:
+            self.driver.save_screenshot("click_error.png")
+            raise
+    # def wait_and_click(self, locator, timeout=10):
+    #     try:
+    #         WebDriverWait(self.driver, timeout).until(
+    #             EC.element_to_be_clickable(locator)
+    #         ).click()
+    #     except StaleElementReferenceException:
+    #         element = WebDriverWait(self.driver, timeout).until(
+    #             EC.element_to_be_clickable(locator)
+    #         )
+    #         element.click()
 
     def refresh(self):
         self.driver.refresh()
