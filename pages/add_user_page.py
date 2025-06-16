@@ -17,14 +17,9 @@ class addUserPage(BasePage):
         self.fill(value=active_check, locator=AddUserFormLocators.ACTIVE)
         self.click(locator=AddUserFormLocators.ADD_BTN)
 
-    def get_result_text(self, timeout=10):
-        element = WebDriverWait(self.driver, timeout).until(
-            EC.visibility_of_element_located(AddUserFormLocators.RESULT_TEXT),
-            message="Результат не появился на странице"
-        )
-        return element.text
-    # def get_result_text(self):
-    #     return self.text(AddUserFormLocators.RESULT_TEXT)
+
+    def get_result_text(self):
+        return self.text(AddUserFormLocators.RESULT_TEXT)
 
     def get_empty_name_text(self):
         return self.text(AddUserFormLocators.EMPTY_NAME_TEXT)
