@@ -11,7 +11,6 @@ class addUserPage(BasePage):
         super().__init__(driver)
 
     def add_user(self, name_text, age_text, gender_text, data_birth_text, active_check):
-        self.wait_and_click(locator=AddUserFormLocators.LINK_ADD_USER)
         self.fill(value=name_text, locator=AddUserFormLocators.NAME)
         self.fill(value=age_text, locator=AddUserFormLocators.AGE)
         self.fill(value=gender_text, locator=AddUserFormLocators.GENDER)

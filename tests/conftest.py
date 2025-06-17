@@ -1,6 +1,7 @@
 import os
 import tempfile
 import logging
+import time
 
 import pytest
 from selenium import webdriver
@@ -23,10 +24,16 @@ def pytest_addoption(parser):
         help="API URL"
     )
     parser.addoption(
-        "--url",
+        "--url-login",
         action="store",
         default="http://158.160.87.146:5000/login",
-        help="URL"
+        help="URL Auth"
+    )
+    parser.addoption(
+        "--url-add-user",
+        action="store",
+        default="http://158.160.87.146:5000/add-user",
+        help="URL add user"
     )
     parser.addoption(
         "--headless",
@@ -57,10 +64,10 @@ def driver(request):
 
 @pytest.fixture(scope="session")
 def auth_page(driver, request):
-    url = request.config.getoption('--url')
+    url = request.config.getoption('--url-login')
     driver.get(url)
     auth_page = AuthPage(driver)
-    return auth_page
+    yield auth_page
 
 
 @pytest.fixture(scope="session")
@@ -71,9 +78,12 @@ def auth_admin(auth_page, api_client):
 
 
 @pytest.fixture(scope="session")
-def add_user_page(driver):
+def add_user_page(driver, request):
+    time.sleep(1)
+    url = request.config.getoption('--url-add-user')
+    driver.get(url)
     add_user_page = addUserPage(driver)
-    return add_user_page
+    yield add_user_page
 
 
 @pytest.fixture(autouse=True)
