@@ -27,11 +27,8 @@ class BasePage:
 
     def wait_and_click(self, locator, timeout=10):
         try:
-            element = WebDriverWait(self.driver, timeout).until(
-                EC.visibility_of_element_located(locator)  # Сначала проверяем видимость
-            )
             WebDriverWait(self.driver, timeout).until(
-                EC.element_to_be_clickable(locator)  # Затем кликабельность
+                EC.element_to_be_clickable(locator)
             ).click()
         except StaleElementReferenceException:
             element = WebDriverWait(self.driver, timeout).until(
