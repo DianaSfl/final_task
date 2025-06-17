@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 
 class AddUserFormLocators:
+    LINK_ADD_USER = (By.CSS_SELECTOR, 'a[href="/add-user"]')
     NAME = (By.ID, "name")
     AGE = (By.ID, "age")
     GENDER = (By.ID, "gender")

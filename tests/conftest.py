@@ -60,7 +60,7 @@ def auth_page(driver, request):
     url = request.config.getoption('--url')
     driver.get(url)
     auth_page = AuthPage(driver)
-    yield auth_page
+    return auth_page
 
 
 @pytest.fixture(scope="session")
@@ -73,7 +73,7 @@ def auth_admin(auth_page, api_client):
 @pytest.fixture(scope="session")
 def add_user_page(driver):
     add_user_page = addUserPage(driver)
-    yield add_user_page
+    return add_user_page
 
 
 @pytest.fixture(autouse=True)

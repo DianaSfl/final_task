@@ -1,5 +1,9 @@
 import pytest
+import logging
+
 from utils.logger_add_user import log_data_add_user
+
+logger = logging.getLogger("add_user_tests")
 
 
 class TestAddUser:
@@ -13,7 +17,7 @@ class TestAddUser:
             active_check=user_data["active"]
         )
         result = add_user_page.get_result_text()
-        log_data_add_user(user_data, result)
+        logger.info(f"Result: {result}")
         assert "Пользователь успешно добавлен!" in result, f"Пользователь не был добавлен"
 
     def test_add_user_empty_name(self, auth_admin, add_user_page, default_user_data):
@@ -27,7 +31,7 @@ class TestAddUser:
             active_check=user_data["active"]
         )
         result = add_user_page.get_empty_name_text()
-        log_data_add_user(user_data, result)
+        logger.info(f"Result: {result}")
         assert "Поле обязательно" in result, f'Пользователь добавлен с пустым полем "имя"'
 
     def test_add_user_empty_age(self, auth_admin, add_user_page, default_user_data):
@@ -42,7 +46,7 @@ class TestAddUser:
             active_check=user_data["active"]
         )
         result = add_user_page.get_empty_age_text()
-        log_data_add_user(user_data, result)
+        logger.info(f"Result: {result}")
         assert "Поле обязательно" in result, f'Пользователь добавлен с пустым полем "возраст"'
 
     @pytest.mark.xfail(reason="Баг: пол не валидируется как обязательное поле")
@@ -58,7 +62,7 @@ class TestAddUser:
             active_check=user_data["active"]
         )
         result = add_user_page.get_result_text()
-        log_data_add_user(user_data, result)
+        logger.info(f"Result: {result}")
         assert "Пользователь успешно добавлен!" not in result, f"Пользователь был добавлен  без обязательного поля 'пол'"
 
     @pytest.mark.xfail(reason="Баг: отрицательный возраст не валидируется")
@@ -74,7 +78,7 @@ class TestAddUser:
             active_check=user_data["active"]
         )
         result = add_user_page.get_result_text()
-        log_data_add_user(user_data, result)
+        logger.info(f"Result: {result}")
         assert "Пользователь успешно добавлен!" not in result, f"Пользователь был добавлен c отрицательным числом в поле 'возраст'"
 
     @pytest.mark.xfail(reason="Баг: числа в имени не валидируются")
@@ -90,7 +94,7 @@ class TestAddUser:
             active_check=user_data["active"]
         )
         result = add_user_page.get_result_text()
-        log_data_add_user(user_data, result)
+        logger.info(f"Result: {result}")
         assert "Пользователь успешно добавлен!" not in result, f"Пользователь был добавлен c числами в поле 'имя'"
 
     @pytest.mark.xfail(reason="Баг: пол не валидируется")
@@ -106,6 +110,6 @@ class TestAddUser:
             active_check=user_data["active"]
         )
         result = add_user_page.get_result_text()
-        log_data_add_user(user_data, result)
+        logger.info(f"Result: {result}")
         assert "Пользователь успешно добавлен!" not in result, f"Пользователь был добавлен с невалидными данными в 'пол'"
 
