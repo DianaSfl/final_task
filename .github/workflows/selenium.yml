@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  test:
+  selenium:
     runs-on: ubuntu-latest
 
     services:
@@ -16,37 +16,31 @@ jobs:
         options: --shm-size=2g
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Install Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser chromium-chromedriver
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Run selenium tests
-        run: |
-          pytest tests --junit-xml=reports/results.xml
-        env:
-          GITHUB_ACTIONS: 'true'
+    - name: Run selenium tests
+      run: |
+        pytest tests --headless --junit-xml=reports/results.xml
 
-      - name: Send Test Results to TestIt
-        run: |
-          testit results import \
-            --url https://team-au3z.testit.software/ \
-            --token= ${{ secrets.TMS_TOKEN }} \
-            --project-id b5d28c1d-ac5f-46a4-886a-328edaba54b5 \
-            --configuration-id 08c50d72-36a8-4493-87b7-f4455fc7541b \
-            --results reports \
-            --testrun-name "Pytest test run" \
-        env:
-          TMS_TOKEN: ${{ secrets.TMS_TOKEN }}
+    - name: Send Test Results to TestIt
+      run: |
+        testit results import \
+          --url https://team-au3z.testit.software/ \
+          --token= ${{ secrets.TMS_TOKEN }} \
+          --project-id b5d28c1d-ac5f-46a4-886a-328edaba54b5 \
+          --configuration-id 08c50d72-36a8-4493-87b7-f4455fc7541b \
+          --results reports \
+          --testrun-name "Pytest test run" \
+      env:
+        TMS_TOKEN: ${{ secrets.TMS_TOKEN }}

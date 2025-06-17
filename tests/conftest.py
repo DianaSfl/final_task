@@ -1,5 +1,6 @@
 import os
 import tempfile
+import logging
 
 import pytest
 from selenium import webdriver
@@ -10,6 +11,8 @@ from api_client.models.add_user import AddUserModel
 from api_client.models.register import RegisterModel
 from pages.add_user_page import addUserPage
 from pages.auth_page import AuthPage
+
+logger = logging.getLogger("add_user_tests")
 
 
 def pytest_addoption(parser):
@@ -41,64 +44,23 @@ def api_client(request):
 
 @pytest.fixture(scope="session")
 def driver(request):
-    options = Options()
-
-    # Проверяем, работает ли в CI (например, GitHub Actions)
-    is_ci = os.getenv('GITHUB_ACTIONS') == 'true'
-
-    if is_ci:
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-gpu')
-
-    # Инициализация драйвера
-    driver = webdriver.Chrome(options=options)
-
-    # Устанавливаем неявные ожидания
-    driver.implicitly_wait(10)
-
-    # Возвращаем драйвер тесту
+    is_headless = request.config.getoption("--headless")
+    chrome_options = Options()
+    chrome_options.add_argument("window-size=1920x1080")
+    if is_headless:
+        chrome_options.add_argument("--headless=new")
+    logger.info(f"Headless is {is_headless}")
+    driver = webdriver.Chrome(options=chrome_options)
     yield driver
-
-    # Закрываем драйвер после завершения всех тестов
     driver.quit()
-    # is_headless = request.config.getoption("--headless")
-    # chrome_options = Options()
-    # chrome_options.add_argument("--window-size=1920x1080")
-    # if is_headless:
-    #     chrome_options.add_argument("--headless=new")
-    #
-    # driver = webdriver.Chrome(options=chrome_options)
-    # options = webdriver.ChromeOptions()
-    # if os.getenv('GITHUB_ACTIONS') == 'true':
-    #     options.add_argument("--headless=new")
-    #     options.add_argument("--no-sandbox")
-    #     options.add_argument("--disable-dev-shm-usage")
-    #     options.add_argument("--disable-gpu")
-    #     options.add_argument("--window-size=1920,1080")
-    # else:
-    #     user_data_dir = os.path.join(tempfile.mkdtemp(), "chrome_profile")
-    #     options.add_argument(f"--user-data-dir={user_data_dir}")
-    #     options.add_argument("--start-maximized")
-    #
-    # driver = webdriver.Chrome(options=options)
-    # yield driver
-    # driver.quit()
-
-
-
 
 
 @pytest.fixture(scope="session")
 def auth_page(driver, request):
     url = request.config.getoption('--url')
     driver.get(url)
-    try:
-        auth_page = AuthPage(driver)
-        yield auth_page
-    finally:
-        driver.quit()
+    auth_page = AuthPage(driver)
+    yield auth_page
 
 
 @pytest.fixture(scope="session")
@@ -110,11 +72,8 @@ def auth_admin(auth_page, api_client):
 
 @pytest.fixture(scope="session")
 def add_user_page(driver):
-    try:
-        add_user_page = addUserPage(driver)
-        yield add_user_page
-    finally:
-        driver.quit()
+    add_user_page = addUserPage(driver)
+    yield add_user_page
 
 
 @pytest.fixture(autouse=True)
@@ -122,6 +81,7 @@ def reset_state(add_user_page):
     # Автоматически обновляет страницу перед каждым тестом.
     add_user_page.refresh_page()
     yield
+
 
 @pytest.fixture(scope="session")
 def default_user_data():
