@@ -37,7 +37,7 @@ jobs:
         run: |
           pytest tests --junit-xml=reports/results.xml
         env:
-        GITHUB_ACTIONS: 'true'
+          GITHUB_ACTIONS: 'true'
 
       - name: Send Test Results to TestIt
         run: |
