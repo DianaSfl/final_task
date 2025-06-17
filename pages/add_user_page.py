@@ -17,7 +17,6 @@ class addUserPage(BasePage):
         self.fill(value=active_check, locator=AddUserFormLocators.ACTIVE)
         self.click(locator=AddUserFormLocators.ADD_BTN)
 
-
     def get_result_text(self):
         return self.text(AddUserFormLocators.RESULT_TEXT)
 

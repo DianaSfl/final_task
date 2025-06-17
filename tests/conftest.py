@@ -41,6 +41,28 @@ def api_client(request):
 
 @pytest.fixture(scope="session")
 def driver(request):
+    options = Options()
+
+    # Проверяем, работает ли в CI (например, GitHub Actions)
+    is_ci = os.getenv('GITHUB_ACTIONS') == 'true'
+
+    if is_ci:
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--disable-gpu')
+
+    # Инициализация драйвера
+    driver = webdriver.Chrome(options=options)
+
+    # Устанавливаем неявные ожидания
+    driver.implicitly_wait(10)
+
+    # Возвращаем драйвер тесту
+    yield driver
+
+    # Закрываем драйвер после завершения всех тестов
+    driver.quit()
     # is_headless = request.config.getoption("--headless")
     # chrome_options = Options()
     # chrome_options.add_argument("--window-size=1920x1080")
@@ -48,21 +70,21 @@ def driver(request):
     #     chrome_options.add_argument("--headless=new")
     #
     # driver = webdriver.Chrome(options=chrome_options)
-    options = webdriver.ChromeOptions()
-    if os.getenv('GITHUB_ACTIONS') == 'true':
-        options.add_argument("--headless=new")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--window-size=1920,1080")
-    else:
-        user_data_dir = os.path.join(tempfile.mkdtemp(), "chrome_profile")
-        options.add_argument(f"--user-data-dir={user_data_dir}")
-        options.add_argument("--start-maximized")
-
-    driver = webdriver.Chrome(options=options)
-    yield driver
-    driver.quit()
+    # options = webdriver.ChromeOptions()
+    # if os.getenv('GITHUB_ACTIONS') == 'true':
+    #     options.add_argument("--headless=new")
+    #     options.add_argument("--no-sandbox")
+    #     options.add_argument("--disable-dev-shm-usage")
+    #     options.add_argument("--disable-gpu")
+    #     options.add_argument("--window-size=1920,1080")
+    # else:
+    #     user_data_dir = os.path.join(tempfile.mkdtemp(), "chrome_profile")
+    #     options.add_argument(f"--user-data-dir={user_data_dir}")
+    #     options.add_argument("--start-maximized")
+    #
+    # driver = webdriver.Chrome(options=options)
+    # yield driver
+    # driver.quit()
 
 
 
