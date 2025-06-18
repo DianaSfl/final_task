@@ -15,4 +15,7 @@ class AuthPage(BasePage):
         self.fill(value=login_text, locator=AuthLocators.LOGIN)
         self.fill(value=password_text, locator=AuthLocators.PASSWORD)
         self.click(locator=AuthLocators.LOGIN_BUTTON)
-        self.text(locator=AddUserFormLocators.LIST_USER)
+        self.wait_url(locator=AddUserFormLocators.LINK_LIST_USER)
+        text = self.text(locator=AddUserFormLocators.LIST_USER)
+        logger.info(f"Страница: {text}")
+

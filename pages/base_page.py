@@ -25,6 +25,11 @@ class BasePage:
         element = self._find_element(locator, wait_time)
         return element.text
 
+    def wait_url(self, locator, wait_time=10):
+        WebDriverWait(self.driver, wait_time).until(
+            EC.url_contains(locator)
+        )
+
     def refresh(self):
         self.driver.refresh()
         return self
