@@ -1,7 +1,4 @@
-import os
-import tempfile
 import logging
-import time
 
 import pytest
 from selenium import webdriver
@@ -43,13 +40,6 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope="session")
-def api_client(request):
-    url = request.config.getoption("--api-url")
-    client = FormClient(url=url)
-    return client
-
-
-@pytest.fixture(scope="session")
 def driver(request):
     is_headless = request.config.getoption("--headless")
     chrome_options = Options()
@@ -60,6 +50,13 @@ def driver(request):
     driver = webdriver.Chrome(options=chrome_options)
     yield driver
     driver.quit()
+
+
+@pytest.fixture(scope="session")
+def api_client(request):
+    url = request.config.getoption("--api-url")
+    client = FormClient(url=url)
+    return client
 
 
 @pytest.fixture(scope="session")
@@ -79,9 +76,9 @@ def auth_admin(auth_page, api_client):
 
 @pytest.fixture(scope="session")
 def add_user_page(driver, request):
-    time.sleep(1)
-    url = request.config.getoption('--url-add-user')
-    driver.get(url)
+    # time.sleep(1)
+    # url = request.config.getoption('--url-add-user')
+    # driver.get(url)
     add_user_page = addUserPage(driver)
     yield add_user_page
 

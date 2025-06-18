@@ -1,8 +1,6 @@
 import pytest
 import logging
 
-from utils.logger_add_user import log_data_add_user
-
 logger = logging.getLogger("add_user_tests")
 
 
