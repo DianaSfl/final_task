@@ -11,6 +11,6 @@ class AddUserFormLocators:
     DATE_BIRTH = (By.ID, "date_birthday")
     ACTIVE = (By.ID, "isActive")
     ADD_BTN = (By.ID, "add-btn")
-    RESULT_TEXT = (By.CSS_SELECTOR, '.alert.alert-success')
+    RESULT_TEXT = (By.CSS_SELECTOR, 'div.alert')
     EMPTY_NAME_TEXT = (By.ID, 'nameError')
     EMPTY_AGE_TEXT = (By.ID, 'ageError')
