@@ -76,9 +76,8 @@ def auth_admin(auth_page, api_client):
 
 @pytest.fixture(scope="session")
 def add_user_page(driver, request):
-    # time.sleep(1)
-    # url = request.config.getoption('--url-add-user')
-    # driver.get(url)
+    url = request.config.getoption('--url-add-user')
+    driver.get(url)
     add_user_page = addUserPage(driver)
     yield add_user_page
 
