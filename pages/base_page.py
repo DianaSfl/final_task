@@ -1,3 +1,4 @@
+from selenium.common import ElementNotInteractableException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -32,3 +33,9 @@ class BasePage:
     def refresh(self):
         self.driver.refresh()
         return self
+
+    def logout(self, locator):
+        try:
+            self._find_element(locator).click()
+        except ElementNotInteractableException:
+            pass

@@ -93,3 +93,11 @@ def reset_state(add_user_page):
 def default_user_data():
     data_user = AddUserModel.random()
     return data_user
+
+
+@pytest.fixture()
+def logout(add_user_page, request, driver):
+    add_user_page.logout_admin()
+    url = request.config.getoption('--url-add-user')
+    driver.get(url)
+    yield

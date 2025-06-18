@@ -106,7 +106,8 @@ class TestAddUser:
         logger.info(f"Result: {result}")
         assert "Пользователь успешно добавлен!" not in result, f"Пользователь был добавлен с невалидными данными в 'пол'"
 
-    def test_add_user_without_logging_in(self, add_user_page, default_user_data):
+    def test_add_user_without_logging_in(self, logout, add_user_page, default_user_data):
+
         user_data = default_user_data.copy()
         add_user_page.add_user(
             name_text=user_data["name"],
@@ -117,5 +118,5 @@ class TestAddUser:
         )
         result = add_user_page.get_result_text()
         logger.info(f"Result: {result}")
-        assert "Вы не авторизованы. Пожалуйста, войдите в систему." in result, f"Пользователь был добавлен с невалидными данными в 'пол'"
+        assert "Вы не авторизованы. Пожалуйста, войдите в систему." in result, f"Пользователь был добавлен без регистрации администратора"
 

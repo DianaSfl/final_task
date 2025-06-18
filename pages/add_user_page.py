@@ -33,3 +33,6 @@ class addUserPage(BasePage):
 
     def refresh_page(self):
         self.refresh()
+
+    def logout_admin(self):
+        self.logout(locator=AddUserFormLocators.LOGOUT_BUTTON)

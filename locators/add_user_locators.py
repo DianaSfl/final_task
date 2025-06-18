@@ -14,3 +14,4 @@ class AddUserFormLocators:
     RESULT_TEXT = (By.CSS_SELECTOR, 'div.alert')
     EMPTY_NAME_TEXT = (By.ID, 'nameError')
     EMPTY_AGE_TEXT = (By.ID, 'ageError')
+    LOGOUT_BUTTON = (By.ID, "logoutBtn")

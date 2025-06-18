@@ -12,3 +12,4 @@ class AuthPage(BasePage):
         self.fill(value=password_text, locator=AuthLocators.PASSWORD)
         self.click(locator=AuthLocators.LOGIN_BUTTON)
         self.wait_url(locator=AddUserFormLocators.LINK_LIST_USER)
+
