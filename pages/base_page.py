@@ -2,7 +2,8 @@ from selenium.common import ElementNotInteractableException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-
+import logging
+logger = logging.getLogger("add_user_tests")
 class BasePage:
     def __init__(self, driver):
         self.driver = driver
@@ -37,5 +38,6 @@ class BasePage:
     def logout(self, locator):
         try:
             self._find_element(locator).click()
+            logger.info("Разлогин")
         except ElementNotInteractableException:
-            pass
+            logger.info("Разлогин не требуется")
