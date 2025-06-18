@@ -35,9 +35,11 @@ class BasePage:
         self.driver.refresh()
         return self
 
-    def logout(self, locator):
+    def logout(self, locator, wait_time=10):
         try:
-            self._find_element(locator).click()
+            element = WebDriverWait(self.driver, wait_time).until(
+                EC.element_to_be_clickable(locator))
+            element.click()
             logger.info("Разлогин")
         except ElementNotInteractableException:
             logger.info("Разлогин не требуется")
