@@ -2,6 +2,7 @@ import logging
 
 logger = logging.getLogger("add_user_tests")
 
+
 def log_data_add_user(name_text, age_text, gender_text, data_birth_text, active_check):
     name = name_text
     age = age_text
