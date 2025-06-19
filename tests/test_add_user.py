@@ -108,7 +108,6 @@ class TestAddUser:
 
     @pytest.mark.xfail(reason="Тест падает в Github, потому что CI не может увидеть кнопку входа")
     def test_add_user_without_logging_in(self, auth_admin, logout, add_user_page, default_user_data):
-
         user_data = default_user_data.copy()
         add_user_page.add_user(
             name_text=user_data["name"],
