@@ -106,7 +106,7 @@ class TestAddUser:
         logger.info(f"Result: {result}")
         assert "Пользователь успешно добавлен!" not in result, f"Пользователь был добавлен с невалидными данными в 'пол'"
 
-    @pytest.mark.xfail(reason="Тест падает в Github, потому что CI не может увидеть кнопку входа")
+    @pytest.mark.xfail(reason="Тест падает в Github, потому что CI не может увидеть кнопку выхода")
     def test_add_user_without_logging_in(self, auth_admin, logout, add_user_page, default_user_data):
         user_data = default_user_data.copy()
         add_user_page.add_user(
