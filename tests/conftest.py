@@ -1,5 +1,4 @@
 import logging
-import os
 
 import pytest
 from selenium import webdriver
@@ -38,20 +37,6 @@ def pytest_addoption(parser):
         action="store_true",
         help="Base application URL"
     )
-
-
-def pytest_configure(config):
-    config.addinivalue_line(
-        "markers",
-        "skip_in_github: Пропустить тест только в GitHub Actions"
-    )
-
-
-def pytest_runtest_setup(item):
-    skip_marker = item.get_closest_marker("skip_in_github")
-    if skip_marker and os.getenv('GITHUB_ACTIONS') == 'true':
-        reason = skip_marker.kwargs.get("reason", "Тест отключен в GitHub Actions")
-        pytest.skip(reason)
 
 
 @pytest.fixture(scope="session")

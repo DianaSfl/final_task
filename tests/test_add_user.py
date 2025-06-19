@@ -46,7 +46,7 @@ class TestAddUser:
         logger.info(f"Result: {result}")
         assert "Поле обязательно" in result, f'Пользователь добавлен с пустым полем "возраст"'
 
-    @pytest.mark.skip_in_github(reason="Баг: пол не валидируется как обязательное поле")
+    @pytest.mark.xfail(reason="Баг: пол не валидируется как обязательное поле")
     def test_add_user_empty_gender(self, auth_admin, add_user_page, default_user_data):
         user_data = default_user_data.copy()
         user_data["gender"] = None
@@ -61,7 +61,7 @@ class TestAddUser:
         logger.info(f"Result: {result}")
         assert "Пользователь успешно добавлен!" not in result, f"Пользователь был добавлен  без обязательного поля 'пол'"
 
-    @pytest.mark.skip_in_github(reason="Баг: отрицательный возраст не валидируется")
+    @pytest.mark.xfail(reason="Баг: отрицательный возраст не валидируется")
     def test_add_user_negative_age(self, auth_admin, add_user_page, default_user_data):
         user_data = default_user_data.copy()
         user_data["age"] = -1
@@ -76,7 +76,7 @@ class TestAddUser:
         logger.info(f"Result: {result}")
         assert "Пользователь успешно добавлен!" not in result, f"Пользователь был добавлен c отрицательным числом в поле 'возраст'"
 
-    @pytest.mark.skip_in_github(reason="Баг: числа в имени не валидируются")
+    @pytest.mark.xfail(reason="Баг: числа в имени не валидируются")
     def test_add_user_number_is_name(self, auth_admin, add_user_page, default_user_data):
         user_data = default_user_data.copy()
         user_data["name"] = 123
@@ -91,7 +91,7 @@ class TestAddUser:
         logger.info(f"Result: {result}")
         assert "Пользователь успешно добавлен!" not in result, f"Пользователь был добавлен c числами в поле 'имя'"
 
-    @pytest.mark.skip_in_github(reason="Баг: пол не валидируется")
+    @pytest.mark.xfail(reason="Баг: пол не валидируется")
     def test_add_user_invalid_gender(self, auth_admin, add_user_page, default_user_data):
         user_data = default_user_data.copy()
         user_data["gender"] = "не_пол"
@@ -106,7 +106,7 @@ class TestAddUser:
         logger.info(f"Result: {result}")
         assert "Пользователь успешно добавлен!" not in result, f"Пользователь был добавлен с невалидными данными в 'пол'"
 
-    @pytest.mark.skip_in_github(reason="Тест падает в Github, потому что CI не может увидеть кнопку входа")
+    @pytest.mark.xfail(reason="Тест падает в Github, потому что CI не может увидеть кнопку входа")
     def test_add_user_without_logging_in(self, auth_admin, logout, add_user_page, default_user_data):
 
         user_data = default_user_data.copy()
