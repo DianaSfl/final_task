@@ -23,13 +23,19 @@ class addUserPage(BasePage):
         self.click(locator=AddUserFormLocators.ADD_BTN)
 
     def get_result_text(self):
-        return self.text(AddUserFormLocators.RESULT_TEXT)
+        result = self.text(AddUserFormLocators.RESULT_TEXT)
+        logger.info(f"Result: {result}")
+        return result
 
     def get_empty_name_text(self):
-        return self.text(AddUserFormLocators.EMPTY_NAME_TEXT)
+        result = self.text(AddUserFormLocators.EMPTY_NAME_TEXT)
+        logger.info(f"Result: {result}")
+        return result
 
     def get_empty_age_text(self):
-        return self.text(AddUserFormLocators.EMPTY_AGE_TEXT)
+        result = self.text(AddUserFormLocators.EMPTY_AGE_TEXT)
+        logger.info(f"Result: {result}")
+        return result
 
     def refresh_page(self):
         self.refresh()

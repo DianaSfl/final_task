@@ -9,28 +9,17 @@ from api_client.models.add_user import AddUserModel
 from api_client.models.register import RegisterModel
 from pages.add_user_page import addUserPage
 from pages.auth_page import AuthPage
+from utils.name_page import namePage
 
 logger = logging.getLogger("add_user_tests")
 
 
 def pytest_addoption(parser):
     parser.addoption(
-        "--api-url",
+        "--url",
         action="store",
         default="http://158.160.87.146:5000",
         help="API URL"
-    )
-    parser.addoption(
-        "--url-login",
-        action="store",
-        default="http://158.160.87.146:5000/login",
-        help="URL Auth"
-    )
-    parser.addoption(
-        "--url-add-user",
-        action="store",
-        default="http://158.160.87.146:5000/add-user",
-        help="URL add user"
     )
     parser.addoption(
         "--headless",
@@ -54,15 +43,16 @@ def driver(request):
 
 @pytest.fixture(scope="session")
 def api_client(request):
-    url = request.config.getoption("--api-url")
+    url = request.config.getoption("--url")
     client = FormClient(url=url)
     return client
 
 
 @pytest.fixture(scope="session")
 def auth_page(driver, request):
-    url = request.config.getoption('--url-login')
-    driver.get(url)
+    url = request.config.getoption('--url')
+    login_url = url + namePage.LOGIN_PAGE
+    driver.get(login_url)
     auth_page = AuthPage(driver)
     yield auth_page
 
@@ -76,8 +66,9 @@ def auth_admin(auth_page, api_client):
 
 @pytest.fixture(scope="session")
 def add_user_page(driver, request):
-    url = request.config.getoption('--url-add-user')
-    driver.get(url)
+    url = request.config.getoption('--url')
+    add_user_url = url + namePage.ADD_USER_PAGE
+    driver.get(add_user_url)
     add_user_page = addUserPage(driver)
     yield add_user_page
 
@@ -98,6 +89,7 @@ def default_user_data():
 @pytest.fixture()
 def logout(add_user_page, request, driver):
     add_user_page.logout_admin()
-    url = request.config.getoption('--url-add-user')
-    driver.get(url)
+    url = request.config.getoption('--url')
+    add_user_url = url + namePage.ADD_USER_PAGE
+    driver.get(add_user_url)
     yield
